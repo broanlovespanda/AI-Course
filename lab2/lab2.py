@@ -40,30 +40,70 @@ from search import Graph
 # The online tester will not test them.
 
 def bfs(graph, start, goal):
-    queue = [start]
+    queue = [[start]]
     visited = []
     while len(queue) > 0:
-        vertex = queue.pop()
-        print([node for node in graph.get_connected_nodes(vertex) if node not in visited])
+        path = queue.pop()
+        vertex = path[-1]
         if(vertex == goal):
-            return vertex
-        if vertex not in visited and vertex != goal:
-            visited.append(start)
-            queue.extend([node for node in graph.get_connected_nodes(vertex) if node not in visited])
+            return path
+        for node in graph.get_connected_nodes(vertex):
+          if node not in visited:
+            visited.append(node)
+            new_path = list(path)
+            new_path.append(node)
+            queue.append(new_path)
+          # queue.extend([node for node in graph.get_connected_nodes(vertex) if node not in visited])
 
-    return vertex 
+    return "Note Found"
 
 ## Once you have completed the breadth-first search,
 ## this part should be very simple to complete.
 def dfs(graph, start, goal):
-    raise NotImplementedError
+    queue = [[start]]
+    visited = []
+    while len(queue) > 0:
+        path = queue.pop()
+        vertex = path[-1]
+        if(vertex == goal):
+            return path
+        for node in graph.get_connected_nodes(vertex):
+          if node not in visited:
+            visited.append(node)
+            new_path = list(path)
+            new_path.append(node)
+            queue.insert(0,new_path)
+          # queue.extend([node for node in graph.get_connected_nodes(vertex) if node not in visited])
 
+    return "Note Found"
 
 ## Now we're going to add some heuristics into the search.  
 ## Remember that hill-climbing is a modified version of depth-first search.
 ## Search direction should be towards lower heuristic values to the goal.
 def hill_climbing(graph, start, goal):
-    raise NotImplementedError
+    queue = [[start]]
+    visited = []
+    while len(queue) > 0:
+        path = queue.pop()
+        vertex = path[-1]
+        if(vertex == goal):
+            return path
+        pathsWithH = []
+        for node in graph.get_connected_nodes(vertex):
+          if node not in visited:
+            visited.append(node)
+            hVal = graph.get_heuristic(node, goal)
+            new_path = list(path)
+            new_path.append(node)
+            pathsWithH.append([path, hVal])
+          # queue.extend([node for node in graph.get_connected_nodes(vertex) if node not in visited])
+        pathsWithH.sort(key=lambda x: x[1])
+        print(pathsWithH)
+        print(queue)
+        queue = [x[0] for x in pathsWithH] + queue
+        print(queue)
+
+    return "Note Found"
 
 ## Now we're going to implement beam search, a variation on BFS
 ## that caps the amount of memory used to store paths.  Remember,
