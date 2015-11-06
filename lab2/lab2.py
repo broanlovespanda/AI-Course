@@ -61,7 +61,7 @@ def bfs(graph, start, goal):
 ## this part should be very simple to complete.
 def dfs(graph, start, goal):
     queue = [[start]]
-    visited = []
+    visited = [start]
     while len(queue) > 0:
         path = queue.pop()
         vertex = path[-1]
@@ -74,6 +74,7 @@ def dfs(graph, start, goal):
             new_path.append(node)
             queue.insert(0,new_path)
           # queue.extend([node for node in graph.get_connected_nodes(vertex) if node not in visited])
+        #print(queue)
 
     return "Note Found"
 
@@ -82,26 +83,34 @@ def dfs(graph, start, goal):
 ## Search direction should be towards lower heuristic values to the goal.
 def hill_climbing(graph, start, goal):
     queue = [[start]]
-    visited = []
+    oldVisited = [start]
     while len(queue) > 0:
         path = queue.pop()
         vertex = path[-1]
         if(vertex == goal):
             return path
         pathsWithH = []
+        #print(vertex)
+        #print(graph.get_connected_nodes(vertex))
+        visited = []
         for node in graph.get_connected_nodes(vertex):
-          if node not in visited:
+          if node not in oldVisited:
+            #if(node == 'D'):
+              #print(graph.get_connected_nodes('D'))
             visited.append(node)
             hVal = graph.get_heuristic(node, goal)
             new_path = list(path)
             new_path.append(node)
-            pathsWithH.append([path, hVal])
+            #print(new_path)
+            pathsWithH.append([new_path, hVal])
+            #print(pathsWithH)
           # queue.extend([node for node in graph.get_connected_nodes(vertex) if node not in visited])
-        pathsWithH.sort(key=lambda x: x[1])
-        print(pathsWithH)
-        print(queue)
-        queue = [x[0] for x in pathsWithH] + queue
-        print(queue)
+        oldVisisted = list(visited)
+        pathsWithH.sort(key=lambda x: x[1], reverse=True)
+        #print(pathsWithH)
+        #print(queue)
+        queue = queue + [x[0] for x in pathsWithH]
+        #print(queue)
 
     return "Note Found"
 
