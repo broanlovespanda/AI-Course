@@ -1,6 +1,6 @@
 # Fall 2012 6.034 Lab 2: Search
 #
-# Your answers for the true and false questions will be in the following form.  
+# Your answers for the true and false questions will be in the following form.
 # Your answers will look like one of the two below:
 #ANSWER1 = True
 #ANSWER1 = False
@@ -55,7 +55,7 @@ def bfs(graph, start, goal):
             queue.append(new_path)
           # queue.extend([node for node in graph.get_connected_nodes(vertex) if node not in visited])
 
-    return "Note Found"
+    return "Not Found"
 
 ## Once you have completed the breadth-first search,
 ## this part should be very simple to complete.
@@ -78,23 +78,26 @@ def dfs(graph, start, goal):
 
     return "Note Found"
 
-## Now we're going to add some heuristics into the search.  
+## Now we're going to add some heuristics into the search.
 ## Remember that hill-climbing is a modified version of depth-first search.
 ## Search direction should be towards lower heuristic values to the goal.
 def hill_climbing(graph, start, goal):
-    queue = [[start]]
-    oldVisited = [start]
+    hVal = graph.get_heuristic(start, goal)
+    queue = [[[start], hval]]
+    visited = [start]
+    print(graph)
     while len(queue) > 0:
-        path = queue.pop()
+        path = queue.pop()[0]
         vertex = path[-1]
         if(vertex == goal):
             return path
         pathsWithH = []
         #print(vertex)
         #print(graph.get_connected_nodes(vertex))
-        visited = []
+        #visited = []
+        #print(oldVisited)
         for node in graph.get_connected_nodes(vertex):
-          if node not in oldVisited:
+          if node not in visited:
             #if(node == 'D'):
               #print(graph.get_connected_nodes('D'))
             visited.append(node)
@@ -105,7 +108,7 @@ def hill_climbing(graph, start, goal):
             pathsWithH.append([new_path, hVal])
             #print(pathsWithH)
           # queue.extend([node for node in graph.get_connected_nodes(vertex) if node not in visited])
-        oldVisisted = list(visited)
+        #oldVisited = list(visited)
         pathsWithH.sort(key=lambda x: x[1], reverse=True)
         #print(pathsWithH)
         #print(queue)
@@ -117,10 +120,25 @@ def hill_climbing(graph, start, goal):
 ## Now we're going to implement beam search, a variation on BFS
 ## that caps the amount of memory used to store paths.  Remember,
 ## we maintain only k candidate paths of length n in our agenda at any time.
-## The k top candidates are to be determined using the 
+## The k top candidates are to be determined using the
 ## graph get_heuristic function, with lower values being better values.
 def beam_search(graph, start, goal, beam_width):
-    raise NotImplementedError
+    queue = [[start]]
+    visited = []
+    while len(queue) > 0:
+        path = queue.pop()
+        vertex = path[-1]
+        if(vertex == goal):
+            return path
+        for node in graph.get_connected_nodes(vertex):
+          if node not in visited:
+            visited.append(node)
+            new_path = list(path)
+            new_path.append(node)
+            queue.append(new_path)
+          # queue.extend([node for node in graph.get_connected_nodes(vertex) if node not in visited])
+
+    return "Not Found"
 
 ## Now we're going to try optimal search.  The previous searches haven't
 ## used edge distances in the calculation.
